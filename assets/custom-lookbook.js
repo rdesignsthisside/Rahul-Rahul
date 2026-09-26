@@ -993,7 +993,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModelBtn.addEventListener("click", function() { 
         lookbookModel.classList.remove("is-open"); 
     });
-
+ 
 
 
   /*

@@ -229,7 +229,7 @@ form.lookbook-product-form .lookbook-options .lookbook-color-options {
 }
 
 .lookbook-product-form button.lookbook-add-button:hover:before {
-    left: 100%;
+    left: 0;
 }
 
 .lookbook-add-button:disabled {
