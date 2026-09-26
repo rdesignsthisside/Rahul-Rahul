@@ -801,7 +801,7 @@ document.addEventListener("DOMContentLoaded", function () {
       false;
 
     addButton.innerHTML = `
-      ADD TO CART
+      <span>ADD TO CART</span>
       <span>→</span>
     `;
 
@@ -936,7 +936,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         addButton.innerHTML = `
-          ADD TO CART
+          <span>ADD TO CART</span>
           <span>→</span>
         `;
 
@@ -1024,14 +1024,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 
 
-  
-  const lookbookModelClose = document.querySelector('.lookbook-modal__close');
-  const lookbookModel = document.querySelector('.lookbook-modal.is-open');
-
-  lookbookModelClose.addEventListener("click", function(){
-    lookbookModel.classList.remove('is-open');
-  });
-
   /*
   ==================================================
   MONEY FORMAT
@@ -1073,5 +1065,15 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
   }
+
+  
+  
+  const lookbookModelClose = document.querySelector('.lookbook-modal__close');
+  const lookbookModel = document.querySelector('.lookbook-modal.is-open');
+
+  lookbookModelClose.addEventListener("click", function(){
+    lookbookModel.classList.remove('is-open');
+  });
+
 
 });
