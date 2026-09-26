@@ -90,11 +90,78 @@
         "padding_top": 44,
         "padding_bottom": 36
       }
+    },
+    "custom_lookbook_CmYbpB": {
+      "type": "custom_lookbook",
+      "blocks": {
+        "lookbook_product_7qDjae": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "black-leather-bag",
+            "hotspot_x": 54,
+            "hotspot_y": 69
+          }
+        },
+        "lookbook_product_Pmkzbj": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "blue-silk-tuxedo",
+            "hotspot_x": 74,
+            "hotspot_y": 54
+          }
+        },
+        "lookbook_product_eHG4mx": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "chequered-red-shirt",
+            "hotspot_x": 56,
+            "hotspot_y": 26
+          }
+        },
+        "lookbook_product_BJek7T": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "classic-leather-jacket",
+            "hotspot_x": 64,
+            "hotspot_y": 31
+          }
+        },
+        "lookbook_product_t3tJAH": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "classic-varsity-top",
+            "hotspot_x": 50,
+            "hotspot_y": 27
+          }
+        },
+        "lookbook_product_XFQyWG": {
+          "type": "lookbook_product",
+          "settings": {
+            "product": "dark-denim-top",
+            "hotspot_x": 69,
+            "hotspot_y": 44
+          }
+        }
+      },
+      "block_order": [
+        "lookbook_product_7qDjae",
+        "lookbook_product_Pmkzbj",
+        "lookbook_product_eHG4mx",
+        "lookbook_product_BJek7T",
+        "lookbook_product_t3tJAH",
+        "lookbook_product_XFQyWG"
+      ],
+      "name": "Custom lookbook",
+      "settings": {
+        "heading": "Tisso vison in the wild",
+        "columns_desktop": "3"
+      }
     }
   },
   "order": [
     "custom_hero_banner_UtnAgL",
     "image_banner",
-    "featured_collection"
+    "featured_collection",
+    "custom_lookbook_CmYbpB"
   ]
 }
