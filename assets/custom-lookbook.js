@@ -989,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
     const closeModelBtn = document.querySelector('.lookbook-modal__close'); 
-    const lookbookModel = document.querySelector('.lookbook-modal.is-open'); 
+    const lookbookModel = document.querySelector('.lookbook-modal'); 
     closeModelBtn.addEventListener("click", function() { 
         lookbookModel.classList.remove("is-open"); 
     });
