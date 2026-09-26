@@ -690,6 +690,12 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModal
   );
 
+  const btn = document.querySelectorAll('.lookbook-modal__close');
+  const lookbookModel = document.querySelector('.lookbook-modal.is-open');
+
+  btn.addEventListener("click", function() {
+    lookbookModel.classList.remove("is-open");
+    });
 
   /*
    * CLOSE ESCAPE
