@@ -113,21 +113,46 @@ a.custom-hero__button:hover {
 
 @media screen and (max-width: 749px) {
 
-  .custom-hero {
-    min-height: 600px;
-  }
 
-  .custom-hero__image {
-    display: none;
-  }
+    .custom-hero {
+        min-height: auto;
+        --hero-height: initial !important;
+        display: flex;
+        flex-direction: column-reverse;
+    }
 
-  .custom-hero__mobile-image {
-    display: block;
-  }
+    .custom-hero__media {
+        position: relative;
+    }
 
-  .custom-hero__content {
-    min-height: 600px;
-    padding: 6vw;
-  }
+    .custom-hero__image {
+        display: none;
+    }
+
+    .custom-hero__mobile-image {
+        display: block;
+    }
+
+    .custom-hero__content {
+        min-height: auto;
+        padding: 6vw;
+    }
+
+    .custom-hero__heading {
+        font-size: 5vw;
+        line-height: 6vw;
+    }
+
+    .custom-hero__description {
+        max-width: 100%;
+        font-size: 3vw;
+        line-height: 4vw;
+    }
+
+    .custom-hero__button {
+        font-size: 3vw;
+        line-height: 4vw;
+        padding: 2vw 4vw;
+    }
 
 }
