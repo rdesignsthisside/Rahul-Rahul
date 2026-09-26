@@ -30,8 +30,8 @@
 .lookbook-hotspot {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
+  width: 1.5vw;
+  height: 1.5vw;
   border-radius: 50%;
   border: 0;
   background: #fff;
@@ -44,7 +44,7 @@
 }
 
 .lookbook-hotspot span {
-  font-size: 20px;
+  font-size: 0.8vw;
   line-height: 1;
 }
 

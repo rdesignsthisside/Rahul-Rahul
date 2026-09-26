@@ -13,46 +13,93 @@ document.addEventListener("DOMContentLoaded", () => {
   const optionsContainer = modal.querySelector("[data-product-options]");
   const form = modal.querySelector("[data-lookbook-form]");
   const cartMessage = modal.querySelector("[data-cart-message]");
+  const addButton = form.querySelector(".lookbook-add-button");
 
   let currentProduct = null;
 
+  /*
+   * OPEN PRODUCT POPUP
+   */
   document.querySelectorAll("[data-lookbook-product]").forEach((button) => {
     button.addEventListener("click", () => {
       const jsonId = button.dataset.productJson;
       const jsonElement = document.getElementById(jsonId);
 
-      if (!jsonElement) return;
+      if (!jsonElement) {
+        console.error("Lookbook product JSON not found:", jsonId);
+        return;
+      }
 
-      currentProduct = JSON.parse(jsonElement.textContent);
+      try {
+        currentProduct = JSON.parse(jsonElement.textContent);
 
-      renderProduct(currentProduct);
+        console.log("Lookbook product:", currentProduct);
 
-      modal.setAttribute("aria-hidden", "false");
-      modal.classList.add("is-open");
+        renderProduct(currentProduct);
 
-      document.body.classList.add("lookbook-modal-open");
+        modal.setAttribute("aria-hidden", "false");
+        modal.classList.add("is-open");
+
+        document.body.classList.add("lookbook-modal-open");
+
+      } catch (error) {
+        console.error("Unable to parse lookbook product:", error);
+      }
     });
   });
 
+
+  /*
+   * RENDER PRODUCT
+   */
   function renderProduct(product) {
-    title.textContent = product.title;
 
-    price.textContent = formatMoney(product.price);
+    // Reset cart message
+    cartMessage.textContent = "";
 
-    description.innerHTML = product.description || "";
+    // Product title
+    title.textContent = product.title || "";
 
+    // Product price
+    const productPrice =
+      product.price ??
+      product.variants?.[0]?.price ??
+      0;
+
+    price.textContent = formatMoney(productPrice);
+
+    // Description
+    description.textContent = product.description || "";
+
+    // Product image
     if (product.featured_image) {
       image.src = product.featured_image;
-      image.alt = product.title;
+      image.alt = product.title || "";
+      image.style.display = "block";
+    } else {
+      image.removeAttribute("src");
+      image.style.display = "none";
     }
 
+    // Variants
     renderOptions(product);
   }
 
+
+  /*
+   * RENDER VARIANT SELECTORS
+   */
   function renderOptions(product) {
+
     optionsContainer.innerHTML = "";
 
-    if (!product.options || product.options.length === 0) {
+    if (
+      !product.options ||
+      !product.options.length ||
+      !product.variants ||
+      product.variants.length <= 1
+    ) {
+      updateVariantState();
       return;
     }
 
@@ -68,15 +115,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       select.dataset.optionIndex = optionIndex;
 
+      /*
+       * Get unique values for this option
+       */
       const values = [
         ...new Set(
           product.variants
-            .map((variant) => variant.options[optionIndex])
+            .map((variant) => variant.options?.[optionIndex])
             .filter(Boolean)
         )
       ];
 
       values.forEach((value) => {
+
         const option = document.createElement("option");
 
         option.value = value;
@@ -91,19 +142,41 @@ document.addEventListener("DOMContentLoaded", () => {
       optionsContainer.appendChild(wrapper);
     });
 
+
+    /*
+     * Listen for variant changes
+     */
     optionsContainer
       .querySelectorAll("select")
       .forEach((select) => {
         select.addEventListener("change", updateVariantState);
       });
 
+
     updateVariantState();
   }
 
+
+  /*
+   * FIND CURRENT VARIANT
+   */
   function getSelectedVariant() {
+
+    if (!currentProduct || !currentProduct.variants?.length) {
+      return null;
+    }
+
     const selects = [
       ...optionsContainer.querySelectorAll("select")
     ];
+
+    /*
+     * If there are no selectors,
+     * use the first variant.
+     */
+    if (!selects.length) {
+      return currentProduct.variants[0];
+    }
 
     const selectedOptions = selects.map(
       (select) => select.value
@@ -119,33 +192,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+
+  /*
+   * UPDATE ADD TO CART BUTTON
+   */
   function updateVariantState() {
 
     const variant = getSelectedVariant();
 
-    const addButton = form.querySelector(
-      ".lookbook-add-button"
-    );
-
     if (!variant) {
+
       addButton.disabled = true;
       addButton.textContent = "UNAVAILABLE";
+
       return;
     }
+
 
     if (!variant.available) {
+
       addButton.disabled = true;
       addButton.textContent = "SOLD OUT";
+
       return;
     }
 
+
     addButton.disabled = false;
+
     addButton.innerHTML = `
       ADD TO CART
       <span>→</span>
     `;
   }
 
+
+  /*
+   * ADD TO CART
+   */
   form.addEventListener("submit", async (event) => {
 
     event.preventDefault();
@@ -156,12 +240,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const button = form.querySelector(
-      ".lookbook-add-button"
-    );
+    addButton.disabled = true;
+    addButton.textContent = "ADDING...";
 
-    button.disabled = true;
-    button.textContent = "ADDING...";
+    cartMessage.textContent = "";
 
     try {
 
@@ -169,9 +251,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `${window.Shopify.routes.root}cart/add.js`,
         {
           method: "POST",
+
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
+
           body: JSON.stringify({
             items: [
               {
@@ -183,26 +268,47 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
 
+
       if (!response.ok) {
+
+        const errorData = await response.json().catch(() => null);
+
+        console.error("Cart error:", errorData);
+
         throw new Error("Unable to add product");
       }
+
 
       await response.json();
 
       cartMessage.textContent = "Added to cart";
 
-      button.innerHTML = `
+      addButton.innerHTML = `
         ADDED TO CART
         <span>✓</span>
       `;
 
+
+      /*
+       * Notify Shopify/theme cart components
+       */
       document.dispatchEvent(
         new CustomEvent("cart:updated")
       );
 
+
+      /*
+       * Also notify common Shopify cart listeners
+       */
+      document.dispatchEvent(
+        new CustomEvent("cart:refresh")
+      );
+
+
       setTimeout(() => {
         closeModal();
       }, 800);
+
 
     } catch (error) {
 
@@ -211,17 +317,23 @@ document.addEventListener("DOMContentLoaded", () => {
       cartMessage.textContent =
         "Unable to add product. Please try again.";
 
-      button.disabled = false;
+      addButton.disabled = false;
 
-      button.innerHTML = `
+      addButton.innerHTML = `
         ADD TO CART
         <span>→</span>
       `;
     }
   });
 
+
+  /*
+   * CLOSE POPUP
+   */
   function closeModal() {
+
     modal.setAttribute("aria-hidden", "true");
+
     modal.classList.remove("is-open");
 
     document.body.classList.remove(
@@ -229,9 +341,28 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  closeButton.addEventListener("click", closeModal);
-  overlay.addEventListener("click", closeModal);
 
+  /*
+   * CLOSE BUTTON
+   */
+  closeButton.addEventListener(
+    "click",
+    closeModal
+  );
+
+
+  /*
+   * CLOSE BY CLICKING OVERLAY
+   */
+  overlay.addEventListener(
+    "click",
+    closeModal
+  );
+
+
+  /*
+   * CLOSE WITH ESCAPE
+   */
   document.addEventListener("keydown", (event) => {
 
     if (
@@ -243,15 +374,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
+
+  /*
+   * FORMAT SHOPIFY PRICE
+   */
   function formatMoney(cents) {
+
+    const numericCents = Number(cents);
+
+    if (!Number.isFinite(numericCents)) {
+      return "";
+    }
+
+    const currency =
+      window.Shopify?.currency?.active || "USD";
 
     return new Intl.NumberFormat(
       document.documentElement.lang || "en",
       {
         style: "currency",
-        currency: window.Shopify.currency.active
+        currency: currency
       }
-    ).format(cents / 100);
-
+    ).format(numericCents / 100);
   }
+
 });
