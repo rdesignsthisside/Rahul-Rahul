@@ -22,44 +22,44 @@
 
         {% assign product = block.settings.product %}
 
-        {% if product != blank %}
+            {% if product != blank %}
 
-          <div
-            class="lookbook-card"
-            {{ block.shopify_attributes }}
-          >
+                <div
+                    class="lookbook-card"
+                    {{ block.shopify_attributes }}
+                >
 
-            <div class="lookbook-card__image">
+                    <div class="lookbook-card__image">
 
-              {% if product.featured_image != blank %}
-                {{
-                  product.featured_image
-                  | image_url: width: 1200
-                  | image_tag:
-                    loading: 'lazy',
-                    class: 'lookbook-card__product-image'
-                }}
-              {% endif %}
+                    {% if product.featured_image != blank %}
+                        {{
+                        product.featured_image
+                        | image_url: width: 1200
+                        | image_tag:
+                            loading: 'lazy',
+                            class: 'lookbook-card__product-image'
+                        }}
+                    {% endif %}
 
-              <button
-                    type="button"
-                    class="lookbook-hotspot"
-                    style="
+                    <button
+                        type="button"
+                        class="lookbook-hotspot"
+                        style="
                         left: {{ block.settings.hotspot_x }}%;
                         top: {{ block.settings.hotspot_y }}%;
-                    "
-                    data-lookbook-product
-                    data-product-handle="{{ product.handle | escape }}"
-                    aria-label="View {{ product.title | escape }}"
+                        "
+                        data-lookbook-product
+                        data-product-handle="{{ product.handle | escape }}"
+                        aria-label="View {{ product.title | escape }}"
                     >
-                    <span>+</span>
-                </button>
+                        <span>+</span>
+                    </button>
 
-            </div>
+                    </div>
 
-          </div>
+                </div>
 
-        {% endif %}
+            {% endif %}
 
       {% endfor %}
 

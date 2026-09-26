@@ -1,7 +1,10 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   const modal = document.querySelector("[data-lookbook-modal]");
 
-  if (!modal) return;
+  if (!modal) {
+    console.error("Lookbook modal not found.");
+    return;
+  }
 
   const closeButton = modal.querySelector("[data-lookbook-close]");
   const overlay = modal.querySelector(".lookbook-modal__overlay");
@@ -20,71 +23,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * OPEN LOOKBOOK PRODUCT
-   * ==========================================
-   */
+  ==================================================
+  OPEN PRODUCT
+  ==================================================
+  */
 
-  document.querySelectorAll("[data-lookbook-product]").forEach((button) => {
+  const productButtons =
+    document.querySelectorAll("[data-lookbook-product]");
 
-    button.addEventListener("click", async () => {
+  productButtons.forEach(function (button) {
 
-      const productHandle = button.dataset.productHandle;
+    button.addEventListener("click", function () {
+
+      const productHandle =
+        button.getAttribute("data-product-handle");
+
+      console.log(
+        "Clicked product:",
+        productHandle
+      );
 
       if (!productHandle) {
-        console.error("No product handle found on lookbook hotspot.");
+        console.error(
+          "No data-product-handle found on hotspot."
+        );
         return;
       }
 
-      if (isLoading) return;
-
-      isLoading = true;
+      if (isLoading) {
+        return;
+      }
 
       openModal();
 
-      showLoading();
-
-      try {
-
-        /*
-         * Shopify Ajax Product API
-         *
-         * Example:
-         * /products/tisso-vision.js
-         */
-
-        const response = await fetch(
-          `${window.Shopify.routes.root}products/${productHandle}.js`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Product request failed: ${response.status}`
-          );
-        }
-
-        const product = await response.json();
-
-        console.log("LOOKBOOK PRODUCT:", product);
-
-        currentProduct = product;
-
-        renderProduct(product);
-
-      } catch (error) {
-
-        console.error(
-          "Unable to load lookbook product:",
-          error
-        );
-
-        showError();
-
-      } finally {
-
-        isLoading = false;
-
-      }
+      loadProduct(productHandle);
 
     });
 
@@ -92,14 +64,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * OPEN MODAL
-   * ==========================================
-   */
+  ==================================================
+  OPEN MODAL
+  ==================================================
+  */
 
   function openModal() {
 
-    modal.setAttribute("aria-hidden", "false");
+    modal.setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
     modal.classList.add("is-open");
 
@@ -111,81 +86,167 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * LOADING STATE
-   * ==========================================
-   */
+  ==================================================
+  LOAD PRODUCT FROM SHOPIFY
+  ==================================================
+  */
+
+  async function loadProduct(productHandle) {
+
+    isLoading = true;
+
+    showLoading();
+
+    try {
+
+      const url =
+        `${window.Shopify.routes.root}products/${encodeURIComponent(productHandle)}.js`;
+
+      console.log(
+        "Fetching product:",
+        url
+      );
+
+      const response =
+        await fetch(url, {
+          method: "GET",
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          `Product request failed: ${response.status}`
+        );
+
+      }
+
+
+      const product =
+        await response.json();
+
+
+      console.log(
+        "Shopify product:",
+        product
+      );
+
+
+      currentProduct =
+        product;
+
+
+      renderProduct(product);
+
+
+    } catch (error) {
+
+      console.error(
+        "Lookbook product error:",
+        error
+      );
+
+      showError();
+
+    } finally {
+
+      isLoading = false;
+
+    }
+
+  }
+
+
+  /*
+  ==================================================
+  LOADING
+  ==================================================
+  */
 
   function showLoading() {
 
-    title.textContent = "Loading...";
+    title.textContent =
+      "Loading...";
 
-    price.textContent = "";
+    price.textContent =
+      "";
 
-    description.textContent = "";
+    description.innerHTML =
+      "";
 
     image.removeAttribute("src");
 
-    image.alt = "";
+    image.alt =
+      "";
 
-    optionsContainer.innerHTML = "";
+    optionsContainer.innerHTML =
+      "";
 
-    cartMessage.textContent = "";
+    cartMessage.textContent =
+      "";
 
-    addButton.disabled = true;
+    addButton.disabled =
+      true;
 
-    addButton.textContent = "LOADING...";
+    addButton.innerHTML =
+      "LOADING...";
 
   }
 
 
   /*
-   * ==========================================
-   * ERROR STATE
-   * ==========================================
-   */
+  ==================================================
+  ERROR
+  ==================================================
+  */
 
   function showError() {
 
-    title.textContent = "Product unavailable";
+    title.textContent =
+      "Product unavailable";
 
-    price.textContent = "";
+    price.textContent =
+      "";
 
     description.textContent =
-      "Unable to load this product. Please try again.";
+      "Unable to load this product.";
 
     image.removeAttribute("src");
 
-    optionsContainer.innerHTML = "";
+    optionsContainer.innerHTML =
+      "";
 
-    addButton.disabled = true;
+    addButton.disabled =
+      true;
 
-    addButton.textContent = "UNAVAILABLE";
+    addButton.textContent =
+      "UNAVAILABLE";
 
   }
 
 
   /*
-   * ==========================================
-   * RENDER PRODUCT
-   * ==========================================
-   */
+  ==================================================
+  RENDER PRODUCT
+  ==================================================
+  */
 
   function renderProduct(product) {
 
     /*
-     * TITLE
-     */
+    TITLE
+    */
 
     title.textContent =
       product.title || "";
 
 
     /*
-     * PRICE
-     *
-     * Shopify returns price in cents.
-     */
+    PRICE
+    */
 
     if (product.price !== undefined) {
 
@@ -194,22 +255,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } else {
 
-      price.textContent = "";
+      price.textContent =
+        "";
 
     }
 
 
     /*
-     * DESCRIPTION
-     */
+    DESCRIPTION
+    */
 
     description.innerHTML =
       product.description || "";
 
 
     /*
-     * IMAGE
-     */
+    IMAGE
+    */
 
     if (product.featured_image) {
 
@@ -233,8 +295,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-     * VARIANTS
-     */
+    VARIANTS
+    */
 
     renderOptions(product);
 
@@ -242,18 +304,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * VARIANT OPTIONS
-   * ==========================================
-   */
+  ==================================================
+  RENDER OPTIONS
+  ==================================================
+
+  Shopify Ajax product JSON:
+
+  product.options = [
+    "Color",
+    "Size"
+  ]
+
+  product.variants = [
+    {
+      options: [
+        "Black",
+        "S"
+      ]
+    }
+  ]
+
+  */
 
   function renderOptions(product) {
 
     optionsContainer.innerHTML = "";
 
+
+    /*
+    No variants
+    */
+
     if (
       !product.variants ||
-      !product.variants.length
+      product.variants.length === 0
     ) {
 
       updateVariantState();
@@ -264,22 +348,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-     * If product only has one default variant,
-     * there is no need to show selectors.
-     */
+    Get Shopify option names.
+    */
 
-    const hasRealOptions =
-      product.options &&
-      product.options.length &&
-      !(
-        product.options.length === 1 &&
-        product.options[0].name === "Title" &&
-        product.options[0].values?.length === 1 &&
-        product.options[0].values[0] === "Default Title"
-      );
+    const optionNames =
+      product.options || [];
 
 
-    if (!hasRealOptions) {
+    /*
+    Default Shopify product
+    */
+
+    if (
+      optionNames.length === 1 &&
+      optionNames[0] === "Title"
+    ) {
 
       updateVariantState();
 
@@ -289,93 +372,235 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /*
-     * Shopify product.options looks like:
-     *
-     * [
-     *   {
-     *     name: "Size",
-     *     position: 1,
-     *     values: ["S", "M", "L"]
-     *   },
-     *   {
-     *     name: "Color",
-     *     position: 2,
-     *     values: ["Black", "White"]
-     *   }
-     * ]
-     */
+    Create each option
+    */
 
-    product.options.forEach((optionData, optionIndex) => {
+    optionNames.forEach(
+      function (optionName, optionIndex) {
 
-      const wrapper =
-        document.createElement("div");
+        const wrapper =
+          document.createElement("div");
 
-      wrapper.className =
-        "lookbook-option";
+        wrapper.className =
+          "lookbook-option";
 
 
-      const label =
-        document.createElement("label");
+        /*
+        OPTION LABEL
+        */
 
-      label.textContent =
-        optionData.name;
+        const label =
+          document.createElement("div");
 
+        label.className =
+          "lookbook-option__label";
 
-      const select =
-        document.createElement("select");
+        label.textContent =
+          optionName;
 
-      select.dataset.optionIndex =
-        optionIndex;
-
-
-      /*
-       * Use Shopify's option values.
-       */
-
-      const values =
-        optionData.values || [];
+        wrapper.appendChild(label);
 
 
-      values.forEach((value) => {
+        /*
+        Determine whether this is Color.
+        */
 
-        const option =
-          document.createElement("option");
-
-        option.value =
-          value;
-
-        option.textContent =
-          value;
-
-        select.appendChild(option);
-
-      });
+        const normalizedName =
+          String(optionName)
+            .trim()
+            .toLowerCase();
 
 
-      wrapper.appendChild(label);
+        const isColor =
+          normalizedName === "color" ||
+          normalizedName === "colour";
 
-      wrapper.appendChild(select);
 
-      optionsContainer.appendChild(wrapper);
+        /*
+        Get unique values for this option.
+        */
 
-    });
+        const values = [];
+
+        product.variants.forEach(
+          function (variant) {
+
+            const value =
+              variant.options &&
+              variant.options[optionIndex];
+
+            if (
+              value &&
+              !values.includes(value)
+            ) {
+
+              values.push(value);
+
+            }
+
+          }
+        );
+
+
+        /*
+        ==================================================
+        COLOR = RADIO BUTTONS
+        ==================================================
+        */
+
+        if (isColor) {
+
+          const colorContainer =
+            document.createElement("div");
+
+          colorContainer.className =
+            "lookbook-color-options";
+
+
+          values.forEach(
+            function (value, valueIndex) {
+
+              const radioId =
+                `lookbook-${product.id}-color-${valueIndex}`;
+
+
+              const label =
+                document.createElement("label");
+
+              label.className =
+                "lookbook-color-option";
+
+
+              const input =
+                document.createElement("input");
+
+              input.type =
+                "radio";
+
+              input.name =
+                `lookbook-color-${product.id}`;
+
+              input.id =
+                radioId;
+
+              input.value =
+                value;
+
+              input.dataset.optionIndex =
+                optionIndex;
+
+
+              /*
+              Select first color automatically.
+              */
+
+              if (valueIndex === 0) {
+
+                input.checked =
+                  true;
+
+              }
+
+
+              const visibleValue =
+                document.createElement("span");
+
+              visibleValue.className =
+                "lookbook-color-option__value";
+
+              visibleValue.textContent =
+                value;
+
+
+              label.appendChild(input);
+
+              label.appendChild(
+                visibleValue
+              );
+
+              colorContainer.appendChild(
+                label
+              );
+
+
+              input.addEventListener(
+                "change",
+                updateVariantState
+              );
+
+            }
+          );
+
+
+          wrapper.appendChild(
+            colorContainer
+          );
+
+        }
+
+
+        /*
+        ==================================================
+        EVERYTHING ELSE = SELECT
+        ==================================================
+        */
+
+        else {
+
+          const select =
+            document.createElement("select");
+
+          select.className =
+            "lookbook-option__select";
+
+          select.dataset.optionIndex =
+            optionIndex;
+
+
+          values.forEach(
+            function (value) {
+
+              const option =
+                document.createElement("option");
+
+              option.value =
+                value;
+
+              option.textContent =
+                value;
+
+              select.appendChild(
+                option
+              );
+
+            }
+          );
+
+
+          select.addEventListener(
+            "change",
+            updateVariantState
+          );
+
+
+          wrapper.appendChild(
+            select
+          );
+
+        }
+
+
+        optionsContainer.appendChild(
+          wrapper
+        );
+
+      }
+    );
 
 
     /*
-     * Listen for changes
-     */
-
-    optionsContainer
-      .querySelectorAll("select")
-      .forEach((select) => {
-
-        select.addEventListener(
-          "change",
-          updateVariantState
-        );
-
-      });
-
+    Update initial variant.
+    */
 
     updateVariantState();
 
@@ -383,17 +608,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * GET SELECTED VARIANT
-   * ==========================================
-   */
+  ==================================================
+  GET SELECTED VARIANT
+  ==================================================
+  */
 
   function getSelectedVariant() {
 
     if (
       !currentProduct ||
       !currentProduct.variants ||
-      !currentProduct.variants.length
+      currentProduct.variants.length === 0
     ) {
 
       return null;
@@ -401,25 +626,75 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const selects =
-      Array.from(
-        optionsContainer.querySelectorAll("select")
-      );
+    /*
+    Store selected values according
+    to Shopify option index.
+    */
+
+    const selectedOptions = [];
 
 
     /*
-     * Product has no selectable options.
-     */
+    GET SELECT VALUES
+    */
 
-    if (!selects.length) {
+    const selects =
+      optionsContainer.querySelectorAll(
+        "select[data-option-index]"
+      );
 
-      /*
-       * Prefer first available variant.
-       */
+
+    selects.forEach(
+      function (select) {
+
+        const index =
+          Number(
+            select.dataset.optionIndex
+          );
+
+        selectedOptions[index] =
+          select.value;
+
+      }
+    );
+
+
+    /*
+    GET COLOR RADIO VALUES
+    */
+
+    const radios =
+      optionsContainer.querySelectorAll(
+        'input[type="radio"][data-option-index]:checked'
+      );
+
+
+    radios.forEach(
+      function (radio) {
+
+        const index =
+          Number(
+            radio.dataset.optionIndex
+          );
+
+        selectedOptions[index] =
+          radio.value;
+
+      }
+    );
+
+
+    /*
+    No options
+    */
+
+    if (selectedOptions.length === 0) {
 
       return (
         currentProduct.variants.find(
-          (variant) => variant.available
+          function (variant) {
+            return variant.available;
+          }
         ) ||
         currentProduct.variants[0]
       );
@@ -427,37 +702,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    const selectedOptions =
-      selects.map(
-        (select) => select.value
+    /*
+    Find exact Shopify variant.
+    */
+
+    const variant =
+      currentProduct.variants.find(
+        function (variant) {
+
+          if (
+            !variant.options
+          ) {
+
+            return false;
+
+          }
+
+
+          return variant.options.every(
+            function (value, index) {
+
+              return (
+                value ===
+                selectedOptions[index]
+              );
+
+            }
+          );
+
+        }
       );
 
 
-    return currentProduct.variants.find(
-      (variant) => {
-
-        return variant.options.every(
-          (value, index) => {
-
-            return (
-              value ===
-              selectedOptions[index]
-            );
-
-          }
-        );
-
-      }
-    );
+    return variant || null;
 
   }
 
 
   /*
-   * ==========================================
-   * UPDATE ADD TO CART
-   * ==========================================
-   */
+  ==================================================
+  UPDATE BUTTON
+  ==================================================
+  */
 
   function updateVariantState() {
 
@@ -503,14 +789,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * ADD TO CART
-   * ==========================================
-   */
+  ==================================================
+  ADD TO CART
+  ==================================================
+  */
 
   form.addEventListener(
     "submit",
-    async (event) => {
+    async function (event) {
 
       event.preventDefault();
 
@@ -556,14 +842,12 @@ document.addEventListener("DOMContentLoaded", () => {
               },
 
               body: JSON.stringify({
-
                 items: [
                   {
                     id: variant.id,
                     quantity: 1
                   }
                 ]
-
               })
             }
           );
@@ -603,20 +887,17 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
 
 
-        /*
-         * Notify Dawn / other cart components.
-         */
-
         document.dispatchEvent(
           new CustomEvent("cart:updated")
         );
 
 
-        setTimeout(() => {
-
-          closeModal();
-
-        }, 800);
+        setTimeout(
+          function () {
+            closeModal();
+          },
+          800
+        );
 
       } catch (error) {
 
@@ -646,10 +927,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * CLOSE MODAL
-   * ==========================================
-   */
+  ==================================================
+  CLOSE MODAL
+  ==================================================
+  */
 
   function closeModal() {
 
@@ -666,44 +947,47 @@ document.addEventListener("DOMContentLoaded", () => {
       "lookbook-modal-open"
     );
 
-    currentProduct = null;
+    currentProduct =
+      null;
 
   }
 
 
   /*
-   * CLOSE BUTTON
-   */
+  CLOSE BUTTON
+  */
 
-  closeButton.addEventListener(
-    "click",
-    closeModal
-  );
+  if (closeButton) {
+
+    closeButton.addEventListener(
+      "click",
+      closeModal
+    );
+
+  }
+
+
+  /*
+  CLOSE OVERLAY
+  */
+
+  if (overlay) {
+
+    overlay.addEventListener(
+      "click",
+      closeModal
+    );
+
+  }
 
 
   /*
-   * CLOSE OVERLAY
-   */
-
-  overlay.addEventListener(
-    "click",
-    closeModal
-  );
-
-  const closeModelBtn = document.querySelector('.lookbook-modal__close');
-  const lookbookModel = document.querySelector('.lookbook-modal.is-open');
-
-  closeModelBtn.addEventListener("click", function() {
-    lookbookModel.classList.remove("is-open");
-    });
-
-  /*
-   * CLOSE ESCAPE
-   */
+  ESCAPE KEY
+  */
 
   document.addEventListener(
     "keydown",
-    (event) => {
+    function (event) {
 
       if (
         event.key === "Escape" &&
@@ -719,10 +1003,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /*
-   * ==========================================
-   * MONEY FORMAT
-   * ==========================================
-   */
+  ==================================================
+  MONEY FORMAT
+  ==================================================
+  */
 
   function formatMoney(cents) {
 
@@ -740,8 +1024,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     const currency =
-      window.Shopify?.currency?.active ||
-      "USD";
+      window.Shopify &&
+      window.Shopify.currency &&
+      window.Shopify.currency.active
+        ? window.Shopify.currency.active
+        : "USD";
 
 
     return new Intl.NumberFormat(
