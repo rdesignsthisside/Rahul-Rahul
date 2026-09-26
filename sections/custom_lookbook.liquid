@@ -1,0 +1,240 @@
+{{ 'custom-lookbook.css' | asset_url | stylesheet_tag }}
+{{ 'custom-lookbook.js' | asset_url | script_tag }}
+
+<section
+  class="custom-lookbook"
+  id="Lookbook-{{ section.id }}"
+>
+
+  <div class="page-width">
+
+    {% if section.settings.heading != blank %}
+      <h2 class="custom-lookbook__heading">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    <div class="custom-lookbook__grid">
+
+      {% for block in section.blocks %}
+
+        {% assign product = block.settings.product %}
+
+        {% if product != blank %}
+
+          <div
+            class="lookbook-card"
+            {{ block.shopify_attributes }}
+          >
+
+            <div class="lookbook-card__image">
+
+              {{
+                product.featured_image
+                | image_url: width: 1200
+                | image_tag:
+                  loading: 'lazy',
+                  class: 'lookbook-card__product-image'
+              }}
+
+              <button
+                type="button"
+                class="lookbook-hotspot"
+                style="
+                  left: {{ block.settings.hotspot_x }}%;
+                  top: {{ block.settings.hotspot_y }}%;
+                "
+                data-lookbook-product
+                data-product-json="LookbookProduct-{{ section.id }}-{{ block.id }}"
+                aria-label="View {{ product.title }}"
+              >
+                <span>+</span>
+              </button>
+
+            </div>
+
+            <script
+              type="application/json"
+              id="LookbookProduct-{{ section.id }}-{{ block.id }}"
+            >
+              {{ product | json }}
+            </script>
+
+          </div>
+
+        {% endif %}
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+
+  <!-- PRODUCT POPUP -->
+
+  <div
+    class="lookbook-modal"
+    data-lookbook-modal
+    aria-hidden="true"
+  >
+
+    <div class="lookbook-modal__overlay"></div>
+
+    <div
+      class="lookbook-modal__content"
+      role="dialog"
+      aria-modal="true"
+    >
+
+      <button
+        type="button"
+        class="lookbook-modal__close"
+        data-lookbook-close
+        aria-label="Close"
+      >
+        ×
+      </button>
+
+      <div class="lookbook-modal__product">
+
+        <div class="lookbook-modal__image-wrapper">
+          <img
+            class="lookbook-modal__image"
+            data-product-image
+            alt=""
+          >
+        </div>
+
+        <div class="lookbook-modal__details">
+
+          <h3 data-product-title></h3>
+
+          <div
+            class="lookbook-modal__price"
+            data-product-price
+          ></div>
+
+          <div
+            class="lookbook-modal__description"
+            data-product-description
+          ></div>
+
+          <form
+            data-lookbook-form
+            class="lookbook-product-form"
+          >
+
+            <div
+              class="lookbook-options"
+              data-product-options
+            ></div>
+
+            <button
+              type="submit"
+              class="lookbook-add-button"
+            >
+              ADD TO CART
+              <span>→</span>
+            </button>
+
+            <div
+              class="lookbook-cart-message"
+              data-cart-message
+            ></div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+{% schema %}
+{
+  "name": "Custom lookbook",
+  "tag": "section",
+  "class": "section-custom-lookbook",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tisso vison in the wild"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "min": 2,
+      "max": 3,
+      "step": 1,
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lookbook_product",
+      "name": "Lookbook product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "range",
+          "id": "hotspot_x",
+          "label": "Hotspot horizontal position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "hotspot_y",
+          "label": "Hotspot vertical position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Custom lookbook",
+      "blocks": [
+        {
+          "type": "lookbook_product"
+        },
+        {
+          "type": "lookbook_product"
+        },
+        {
+          "type": "lookbook_product"
+        },
+        {
+          "type": "lookbook_product"
+        },
+        {
+          "type": "lookbook_product"
+        },
+        {
+          "type": "lookbook_product"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,160 @@
+{{ 'custom-banner.css' | asset_url | stylesheet_tag }}
+
+<section
+  class="custom-hero"
+  style="
+    --hero-height: {{ section.settings.desktop_height }}px;
+    --hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  "
+>
+  <div class="custom-hero__media">
+
+    {% if section.settings.image != blank %}
+      {{
+        section.settings.image
+        | image_url: width: 2400
+        | image_tag:
+          loading: 'eager',
+          widths: '750, 1100, 1500, 2000, 2400',
+          class: 'custom-hero__image'
+      }}
+    {% endif %}
+
+    {% if section.settings.mobile_image != blank %}
+      {{
+        section.settings.mobile_image
+        | image_url: width: 1200
+        | image_tag:
+          loading: 'eager',
+          widths: '375, 550, 750, 1000, 1200',
+          class: 'custom-hero__mobile-image'
+      }}
+    {% endif %}
+
+    <div class="custom-hero__overlay"></div>
+
+  </div>
+
+  <div
+    class="
+      custom-hero__content
+      custom-hero__content--{{ section.settings.text_alignment }}
+    "
+  >
+
+    {% if section.settings.heading != blank %}
+      <h1 class="custom-hero__heading">
+        {{ section.settings.heading }}
+      </h1>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <div class="custom-hero__description">
+        {{ section.settings.description }}
+      </div>
+    {% endif %}
+
+    {% if section.settings.button_text != blank %}
+      <a
+        href="{{ section.settings.button_link }}"
+        class="custom-hero__button"
+      >
+        {{ section.settings.button_text }}
+
+        <span aria-hidden="true">
+          →
+        </span>
+      </a>
+    {% endif %}
+
+  </div>
+</section>
+
+
+{% schema %}
+{
+  "name": "Custom hero banner",
+  "tag": "section",
+  "class": "section-custom-hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover Joy: Your Ultimate Holiday Gift Destination.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "min": 400,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "default": 650
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom hero banner"
+    }
+  ]
+}
+{% endschema %}
