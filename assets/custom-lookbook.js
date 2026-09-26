@@ -247,276 +247,139 @@ document.addEventListener("DOMContentLoaded", () => {
    * ==========================================
    */
 
-  function renderOptions(product) {function renderOptions(product) {
+  function renderOptions(product) {
 
-        optionsContainer.innerHTML = "";
+    optionsContainer.innerHTML = "";
 
-        if (
-            !product.options ||
-            !product.options.length ||
-            !product.variants ||
-            !product.variants.length
-        ) {
-            updateVariantState();
-            return;
-        }
+    if (
+      !product.variants ||
+      !product.variants.length
+    ) {
 
+      updateVariantState();
 
-        /*
-        * Check if product has real options.
-        *
-        * Example:
-        * Size / Color
-        *
-        * A product with only "Default Title"
-        * doesn't need option controls.
-        */
-
-        const hasRealOptions =
-            product.options.length &&
-            !(
-            product.options.length === 1 &&
-            product.options[0].name === "Title" &&
-            product.options[0].values?.length === 1 &&
-            product.options[0].values[0] === "Default Title"
-            );
-
-
-        if (!hasRealOptions) {
-            updateVariantState();
-            return;
-        }
-
-
-        /*
-        * CREATE EACH PRODUCT OPTION
-        */
-
-        product.options.forEach((optionData, optionIndex) => {
-
-            const wrapper =
-            document.createElement("div");
-
-            wrapper.className =
-            "lookbook-option";
-
-
-            /*
-            * OPTION NAME
-            */
-
-            const label =
-            document.createElement("label");
-
-            label.className =
-            "lookbook-option__label";
-
-            label.textContent =
-            optionData.name;
-
-            wrapper.appendChild(label);
-
-
-            /*
-            * CHECK IF THIS IS COLOR
-            */
-
-            const optionName =
-            String(optionData.name || "")
-                .trim()
-                .toLowerCase();
-
-            const isColor =
-            optionName === "color" ||
-            optionName === "colour";
-
-
-            /*
-            * ==========================================
-            * COLOR = RADIO BUTTONS
-            * ==========================================
-            */
-
-            if (isColor) {
-
-            const radioContainer =
-                document.createElement("div");
-
-            radioContainer.className =
-                "lookbook-color-options";
-
-
-            const values =
-                optionData.values || [];
-
-
-            values.forEach((value, valueIndex) => {
-
-                const radioId =
-                `lookbook-color-${optionIndex}-${valueIndex}`;
-
-
-                /*
-                * Label wrapper
-                */
-
-                const radioLabel =
-                document.createElement("label");
-
-                radioLabel.className =
-                "lookbook-color-option";
-
-                radioLabel.setAttribute(
-                "for",
-                radioId
-                );
-
-
-                /*
-                * Radio input
-                */
-
-                const radio =
-                document.createElement("input");
-
-                radio.type =
-                "radio";
-
-                radio.name =
-                `lookbook-option-${optionIndex}`;
-
-                radio.id =
-                radioId;
-
-                radio.value =
-                value;
-
-                radio.dataset.optionIndex =
-                optionIndex;
-
-
-                /*
-                * Select first color by default
-                */
-
-                if (valueIndex === 0) {
-                radio.checked = true;
-                }
-
-
-                /*
-                * Visible color/value element
-                */
-
-                const colorValue =
-                document.createElement("span");
-
-                colorValue.className =
-                "lookbook-color-option__value";
-
-                colorValue.textContent =
-                value;
-
-
-                radioLabel.appendChild(
-                radio
-                );
-
-                radioLabel.appendChild(
-                colorValue
-                );
-
-                radioContainer.appendChild(
-                radioLabel
-                );
-
-
-                /*
-                * Variant update
-                */
-
-                radio.addEventListener(
-                "change",
-                updateVariantState
-                );
-
-            });
-
-
-            wrapper.appendChild(
-                radioContainer
-            );
-
-            }
-
-
-            /*
-            * ==========================================
-            * ALL OTHER OPTIONS = DROPDOWN
-            * ==========================================
-            */
-
-            else {
-
-            const select =
-                document.createElement("select");
-
-            select.className =
-                "lookbook-option__select";
-
-            select.dataset.optionIndex =
-                optionIndex;
-
-
-            const values =
-                optionData.values || [];
-
-
-            values.forEach((value) => {
-
-                const option =
-                document.createElement("option");
-
-                option.value =
-                value;
-
-                option.textContent =
-                value;
-
-                select.appendChild(
-                option
-                );
-
-            });
-
-
-            select.addEventListener(
-                "change",
-                updateVariantState
-            );
-
-
-            wrapper.appendChild(
-                select
-            );
-
-            }
-
-
-            optionsContainer.appendChild(
-            wrapper
-            );
-
-        });
-
-
-        /*
-        * Update initial variant
-        */
-
-        updateVariantState();
+      return;
 
     }
+
+
+    /*
+     * If product only has one default variant,
+     * there is no need to show selectors.
+     */
+
+    const hasRealOptions =
+      product.options &&
+      product.options.length &&
+      !(
+        product.options.length === 1 &&
+        product.options[0].name === "Title" &&
+        product.options[0].values?.length === 1 &&
+        product.options[0].values[0] === "Default Title"
+      );
+
+
+    if (!hasRealOptions) {
+
+      updateVariantState();
+
+      return;
+
+    }
+
+
+    /*
+     * Shopify product.options looks like:
+     *
+     * [
+     *   {
+     *     name: "Size",
+     *     position: 1,
+     *     values: ["S", "M", "L"]
+     *   },
+     *   {
+     *     name: "Color",
+     *     position: 2,
+     *     values: ["Black", "White"]
+     *   }
+     * ]
+     */
+
+    product.options.forEach((optionData, optionIndex) => {
+
+      const wrapper =
+        document.createElement("div");
+
+      wrapper.className =
+        "lookbook-option";
+
+
+      const label =
+        document.createElement("label");
+
+      label.textContent =
+        optionData.name;
+
+
+      const select =
+        document.createElement("select");
+
+      select.dataset.optionIndex =
+        optionIndex;
+
+
+      /*
+       * Use Shopify's option values.
+       */
+
+      const values =
+        optionData.values || [];
+
+
+      values.forEach((value) => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          value;
+
+        option.textContent =
+          value;
+
+        select.appendChild(option);
+
+      });
+
+
+      wrapper.appendChild(label);
+
+      wrapper.appendChild(select);
+
+      optionsContainer.appendChild(wrapper);
+
+    });
+
+
+    /*
+     * Listen for changes
+     */
+
+    optionsContainer
+      .querySelectorAll("select")
+      .forEach((select) => {
+
+        select.addEventListener(
+          "change",
+          updateVariantState
+        );
+
+      });
+
+
+    updateVariantState();
+
+  }
 
 
   /*
