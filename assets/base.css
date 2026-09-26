@@ -2396,11 +2396,17 @@ a.header_custom_btn:before {
     height: 100%;
     width: 100%;
     background: #000;
-    transition: all 0.4 ease-in-out;
+    transition: all 0.4s ease-in-out;
+    z-index: 1;
 }
 
 a.header_custom_btn:hover:before {
   left: 0;
+}
+
+.header a.header_custom_btn span {
+    z-index: 2;
+    position: relative;
 }
 
 .header a.header_custom_btn:hover {
