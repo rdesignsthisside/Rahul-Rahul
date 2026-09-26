@@ -2359,6 +2359,12 @@ input[type='checkbox'] {
   z-index: initial;
 }
 
+body header.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 /* Main Header Layout */
 .header-wrapper {
   display: block;
@@ -2422,7 +2428,7 @@ input[type='checkbox'] {
   .header--top-center {
     grid-template-areas:
       'left-icons heading icons'
-      'headline headline headline';
+      'navigation navigation navigation';
   }
 
   .header--top-center.drawer-menu {
