@@ -236,375 +236,398 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function renderProduct(product) {
 
-    /*
-    TITLE
-    */
+        /*
+        TITLE
+        */
 
-    title.textContent =
-      product.title || "";
-
-
-    /*
-    PRICE
-    */
-
-    if (product.price !== undefined) {
-
-      price.textContent =
-        formatMoney(product.price);
-
-    } else {
-
-      price.textContent =
-        "";
-
-    }
-
-
-    /*
-    DESCRIPTION
-    */
-
-    description.innerHTML =
-      product.description || "";
-
-
-    /*
-    IMAGE
-    */
-
-    if (product.featured_image) {
-
-      image.src =
-        product.featured_image;
-
-      image.alt =
+        title.textContent =
         product.title || "";
-
-      image.style.display =
-        "block";
-
-    } else {
-
-      image.removeAttribute("src");
-
-      image.style.display =
-        "none";
-
-    }
-
-
-    /*
-    VARIANTS
-    */
-
-    renderOptions(product);
-
-  }
-
-
-  /*
-  ==================================================
-  RENDER OPTIONS
-  ==================================================
-
-  Shopify Ajax product JSON:
-
-  product.options = [
-    "Color",
-    "Size"
-  ]
-
-  product.variants = [
-    {
-      options: [
-        "Black",
-        "S"
-      ]
-    }
-  ]
-
-  */
-
-  function renderOptions(product) {
-
-    optionsContainer.innerHTML = "";
-
-
-    /*
-    No variants
-    */
-
-    if (
-      !product.variants ||
-      product.variants.length === 0
-    ) {
-
-      updateVariantState();
-
-      return;
-
-    }
-
-
-    /*
-    Get Shopify option names.
-    */
-
-    const optionNames =
-      product.options || [];
-
-
-    /*
-    Default Shopify product
-    */
-
-    if (
-      optionNames.length === 1 &&
-      optionNames[0] === "Title"
-    ) {
-
-      updateVariantState();
-
-      return;
-
-    }
-
-
-    /*
-    Create each option
-    */
-
-    optionNames.forEach(
-      function (optionName, optionIndex) {
-
-        const wrapper =
-          document.createElement("div");
-
-        wrapper.className =
-          "lookbook-option";
 
 
         /*
-        OPTION LABEL
+        PRICE
+        */
+
+        if (product.price !== undefined) {
+
+        price.textContent =
+            formatMoney(product.price);
+
+        } else {
+
+        price.textContent =
+            "";
+
+        }
+
+
+        /*
+        DESCRIPTION
+        */
+
+        description.innerHTML =
+        product.description || "";
+
+
+        /*
+        IMAGE
+        */
+
+        if (product.featured_image) {
+
+        image.src =
+            product.featured_image;
+
+        image.alt =
+            product.title || "";
+
+        image.style.display =
+            "block";
+
+        } else {
+
+        image.removeAttribute("src");
+
+        image.style.display =
+            "none";
+
+        }
+
+
+        /*
+        VARIANTS
+        */
+
+        renderOptions(product);
+
+    }
+
+
+    /*
+    ==================================================
+    RENDER OPTIONS
+    ==================================================
+
+    Shopify Ajax product JSON:
+
+    product.options = [
+        "Color",
+        "Size"
+    ]
+
+    product.variants = [
+        {
+        options: [
+            "Black",
+            "S"
+        ]
+        }
+    ]
+
+    */
+
+    function renderOptions(product) {
+
+    optionsContainer.innerHTML = "";
+
+    if (
+        !product.variants ||
+        !product.variants.length ||
+        !product.options ||
+        !product.options.length
+    ) {
+        updateVariantState();
+        return;
+    }
+
+
+    /*
+    * Shopify can return product.options like:
+    *
+    * [
+    *   {
+    *     name: "Size",
+    *     position: 1
+    *   },
+    *   {
+    *     name: "Color",
+    *     position: 2
+    *   }
+    * ]
+    *
+    * We therefore use optionData.name.
+    */
+
+
+    product.options.forEach(function (optionData, optionIndex) {
+
+        /*
+        * Get actual option name.
+        */
+
+        const optionName =
+        typeof optionData === "string"
+            ? optionData
+            : optionData.name;
+
+
+        if (!optionName) {
+        return;
+        }
+
+
+        /*
+        * Create wrapper.
+        */
+
+        const wrapper =
+        document.createElement("div");
+
+        wrapper.className =
+        "lookbook-option";
+
+
+        /*
+        * Create label.
         */
 
         const label =
-          document.createElement("div");
+        document.createElement("div");
 
         label.className =
-          "lookbook-option__label";
+        "lookbook-option__label";
 
         label.textContent =
-          optionName;
+        optionName;
 
         wrapper.appendChild(label);
 
 
         /*
-        Determine whether this is Color.
+        * Determine whether this is Color.
         */
 
         const normalizedName =
-          String(optionName)
+        optionName
+            .toString()
             .trim()
             .toLowerCase();
 
 
         const isColor =
-          normalizedName === "color" ||
-          normalizedName === "colour";
+        normalizedName === "color" ||
+        normalizedName === "colour";
 
 
         /*
-        Get unique values for this option.
+        * Get all values for this option
+        * from the product variants.
         */
 
         const values = [];
 
-        product.variants.forEach(
-          function (variant) {
+        product.variants.forEach(function (variant) {
 
-            const value =
-              variant.options &&
-              variant.options[optionIndex];
+        if (
+            !variant.options ||
+            variant.options[optionIndex] === undefined
+        ) {
+            return;
+        }
 
-            if (
-              value &&
-              !values.includes(value)
-            ) {
 
-              values.push(value);
+        const value =
+            variant.options[optionIndex];
 
-            }
 
-          }
-        );
+        if (
+            value &&
+            !values.includes(value)
+        ) {
+            values.push(value);
+        }
+
+        });
 
 
         /*
-        ==================================================
-        COLOR = RADIO BUTTONS
-        ==================================================
+        * ========================================
+        * COLOR
+        * ========================================
+        *
+        * Color is rendered as radio buttons.
         */
 
         if (isColor) {
 
-          const colorContainer =
+        const colorContainer =
             document.createElement("div");
 
-          colorContainer.className =
+        colorContainer.className =
             "lookbook-color-options";
 
 
-          values.forEach(
-            function (value, valueIndex) {
+        values.forEach(function (value, valueIndex) {
 
-              const radioId =
-                `lookbook-${product.id}-color-${valueIndex}`;
-
-
-              const label =
-                document.createElement("label");
-
-              label.className =
-                "lookbook-color-option";
+            const radioId =
+            `lookbook-color-${product.id}-${optionIndex}-${valueIndex}`;
 
 
-              const input =
-                document.createElement("input");
+            /*
+            * Label
+            */
 
-              input.type =
-                "radio";
+            const colorLabel =
+            document.createElement("label");
 
-              input.name =
-                `lookbook-color-${product.id}`;
+            colorLabel.className =
+            "lookbook-color-option";
 
-              input.id =
-                radioId;
-
-              input.value =
-                value;
-
-              input.dataset.optionIndex =
-                optionIndex;
+            colorLabel.setAttribute(
+            "for",
+            radioId
+            );
 
 
-              /*
-              Select first color automatically.
-              */
+            /*
+            * Radio input
+            */
 
-              if (valueIndex === 0) {
+            const radio =
+            document.createElement("input");
 
-                input.checked =
-                  true;
+            radio.type =
+            "radio";
 
-              }
+            radio.id =
+            radioId;
 
+            radio.name =
+            `lookbook-color-${product.id}-${optionIndex}`;
 
-              const visibleValue =
-                document.createElement("span");
+            radio.value =
+            value;
 
-              visibleValue.className =
-                "lookbook-color-option__value";
-
-              visibleValue.textContent =
-                value;
-
-
-              label.appendChild(input);
-
-              label.appendChild(
-                visibleValue
-              );
-
-              colorContainer.appendChild(
-                label
-              );
+            radio.dataset.optionIndex =
+            optionIndex;
 
 
-              input.addEventListener(
-                "change",
-                updateVariantState
-              );
+            /*
+            * Select first color by default.
+            */
 
+            if (valueIndex === 0) {
+            radio.checked = true;
             }
-          );
 
 
-          wrapper.appendChild(
+            /*
+            * Visible button text
+            */
+
+            const colorValue =
+            document.createElement("span");
+
+            colorValue.className =
+            "lookbook-color-option__value";
+
+            colorValue.textContent =
+            value;
+
+
+            /*
+            * Build radio button.
+            */
+
+            colorLabel.appendChild(radio);
+
+            colorLabel.appendChild(colorValue);
+
+            colorContainer.appendChild(colorLabel);
+
+
+            /*
+            * Variant update.
+            */
+
+            radio.addEventListener(
+            "change",
+            updateVariantState
+            );
+
+        });
+
+
+        wrapper.appendChild(
             colorContainer
-          );
+        );
 
         }
 
 
         /*
-        ==================================================
-        EVERYTHING ELSE = SELECT
-        ==================================================
+        * ========================================
+        * ALL OTHER OPTIONS
+        * ========================================
+        *
+        * Size stays as dropdown.
         */
 
         else {
 
-          const select =
+        const select =
             document.createElement("select");
 
-          select.className =
+        select.className =
             "lookbook-option__select";
 
-          select.dataset.optionIndex =
+        select.dataset.optionIndex =
             optionIndex;
 
 
-          values.forEach(
-            function (value) {
+        values.forEach(function (value) {
 
-              const option =
-                document.createElement("option");
+            const option =
+            document.createElement("option");
 
-              option.value =
-                value;
+            option.value =
+            value;
 
-              option.textContent =
-                value;
+            option.textContent =
+            value;
 
-              select.appendChild(
-                option
-              );
+            select.appendChild(option);
 
-            }
-          );
+        });
 
 
-          select.addEventListener(
+        select.addEventListener(
             "change",
             updateVariantState
-          );
+        );
 
 
-          wrapper.appendChild(
+        wrapper.appendChild(
             select
-          );
+        );
 
         }
 
 
         optionsContainer.appendChild(
-          wrapper
+        wrapper
         );
 
-      }
-    );
+    });
 
 
     /*
-    Update initial variant.
+    * Set initial variant state.
     */
 
     updateVariantState();
 
-  }
+    }
 
 
   /*
@@ -613,130 +636,127 @@ document.addEventListener("DOMContentLoaded", function () {
   ==================================================
   */
 
-  function getSelectedVariant() {
+    function getSelectedVariant() {
 
-    if (
-      !currentProduct ||
-      !currentProduct.variants ||
-      currentProduct.variants.length === 0
-    ) {
-
-      return null;
-
-    }
+        if (
+            !currentProduct ||
+            !currentProduct.variants ||
+            !currentProduct.variants.length
+        ) {
+            return null;
+        }
 
 
-    /*
-    Store selected values according
-    to Shopify option index.
-    */
+        /*
+        * Store selected values according
+        * to Shopify option position.
+        */
 
-    const selectedOptions = [];
-
-
-    /*
-    GET SELECT VALUES
-    */
-
-    const selects =
-      optionsContainer.querySelectorAll(
-        "select[data-option-index]"
-      );
+        const selectedOptions = [];
 
 
-    selects.forEach(
-      function (select) {
+        /*
+        * ========================================
+        * GET DROPDOWN VALUES
+        * ========================================
+        */
 
-        const index =
-          Number(
-            select.dataset.optionIndex
-          );
-
-        selectedOptions[index] =
-          select.value;
-
-      }
-    );
+        const selects =
+            optionsContainer.querySelectorAll(
+            "select[data-option-index]"
+            );
 
 
-    /*
-    GET COLOR RADIO VALUES
-    */
+        selects.forEach(function (select) {
 
-    const radios =
-      optionsContainer.querySelectorAll(
-        'input[type="radio"][data-option-index]:checked'
-      );
+            const index =
+            Number(
+                select.dataset.optionIndex
+            );
 
+            selectedOptions[index] =
+            select.value;
 
-    radios.forEach(
-      function (radio) {
-
-        const index =
-          Number(
-            radio.dataset.optionIndex
-          );
-
-        selectedOptions[index] =
-          radio.value;
-
-      }
-    );
+        });
 
 
-    /*
-    No options
-    */
+        /*
+        * ========================================
+        * GET RADIO VALUES
+        * ========================================
+        */
 
-    if (selectedOptions.length === 0) {
-
-      return (
-        currentProduct.variants.find(
-          function (variant) {
-            return variant.available;
-          }
-        ) ||
-        currentProduct.variants[0]
-      );
-
-    }
+        const radios =
+            optionsContainer.querySelectorAll(
+            'input[type="radio"][data-option-index]:checked'
+            );
 
 
-    /*
-    Find exact Shopify variant.
-    */
+        radios.forEach(function (radio) {
 
-    const variant =
-      currentProduct.variants.find(
-        function (variant) {
+            const index =
+            Number(
+                radio.dataset.optionIndex
+            );
 
-          if (
-            !variant.options
-          ) {
+            selectedOptions[index] =
+            radio.value;
 
-            return false;
-
-          }
+        });
 
 
-          return variant.options.every(
-            function (value, index) {
+        /*
+        * ========================================
+        * NO OPTIONS
+        * ========================================
+        */
 
-              return (
-                value ===
-                selectedOptions[index]
-              );
+        if (selectedOptions.length === 0) {
 
-            }
-          );
+            return (
+            currentProduct.variants.find(
+                function (variant) {
+                return variant.available;
+                }
+            ) ||
+            currentProduct.variants[0]
+            );
 
         }
-      );
 
 
-    return variant || null;
+        /*
+        * ========================================
+        * FIND MATCHING VARIANT
+        * ========================================
+        */
 
-  }
+        return currentProduct.variants.find(
+            function (variant) {
+
+            if (
+                !variant.options ||
+                variant.options.length !== selectedOptions.length
+            ) {
+                return false;
+            }
+
+
+            return variant.options.every(
+                function (value, index) {
+
+                return (
+                    value ===
+                    selectedOptions[index]
+                );
+
+                }
+            );
+
+            }
+        ) || null;
+
+    }
 
 
   /*
