@@ -136,11 +136,14 @@ a.custom-hero__button:hover {
     .custom-hero__content {
         min-height: auto;
         padding: 6vw;
+        position: initial;
+        text-align: center;
     }
 
     .custom-hero__heading {
         font-size: 5vw;
         line-height: 6vw;
+        margin: auto;
     }
 
     .custom-hero__description {
@@ -153,6 +156,12 @@ a.custom-hero__button:hover {
         font-size: 3vw;
         line-height: 4vw;
         padding: 2vw 4vw;
+        position: absolute;
+        bottom: 10vw;
+        left: 0;
+        right: 0;
+        max-width: max-content;
+        margin: auto;
     }
 
 }

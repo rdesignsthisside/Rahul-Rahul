@@ -144,7 +144,7 @@ form.lookbook-product-form .lookbook-options .lookbook-color-options {
 
 .lookbook-color-options label {
     width: 50%;
-    margin: 0;
+    margin: 0 !important;
     border: 1px solid #000;
     font-size: 1vw;
     line-height: 1.4vw;
@@ -258,5 +258,71 @@ form.lookbook-product-form .lookbook-options .lookbook-color-options {
   .lookbook-modal__product {
     grid-template-columns: 1fr;
   }
+
+  .custom-lookbook__heading {
+        text-align: center;
+        margin: 0 0 3vw;
+        font-size: 5vw;
+        line-height: 6vw;
+    }
+  
+
+    .lookbook-hotspot {
+        width: 4vw;
+        height: 4vw;
+    }
+
+    .lookbook-hotspot span {
+        font-size: 4vw;
+        line-height: 5vw;
+    }
+
+    .lookbook-modal__content {
+        width: 80%;
+        padding: 3vw;
+    }
+
+    .lookbook-modal__description p {
+        margin: 0;
+    }
+
+    .lookbook-modal__product .lookbook-modal__details h3 {
+        font-size: 3vw;
+        line-height: 4vw;
+        margin: 0 0 1vw;
+    }
+
+    .lookbook-modal__product .lookbook-modal__details .lookbook-modal__price {
+        font-size: 2.5vw;
+        line-height: 3.5vw;
+        margin: 0 0 1vw;
+    }
+
+    .lookbook-modal__description {
+        font-size: 2.5vw;
+        line-height: 3.5vw;
+    }
+
+    .lookbook-option {
+        margin-bottom: 2vw;
+    }
+
+    .lookbook-color-options label {
+        font-size: 3vw;
+        line-height: 4vw;
+        padding: 1vw;
+    }
+
+    .lookbook-options select.lookbook-option__select {
+        font-size: 3vw;
+        line-height: 4vw;
+        padding: 1vw;
+    }
+
+    .lookbook-product-form button.lookbook-add-button {
+        font-size: 3vw;
+        line-height: 4vw;
+        padding: 2vw;
+    }
 
 }
