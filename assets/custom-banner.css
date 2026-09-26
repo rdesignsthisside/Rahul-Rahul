@@ -35,12 +35,13 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 50px;
+  padding: 3vw;
 }
 
 .custom-hero__content--left {
-  align-items: flex-start;
-  text-align: left;
+    text-align: left;
+    justify-content: flex-end;
+    align-items: flex-start;
 }
 
 .custom-hero__content--center {
@@ -54,22 +55,22 @@
 }
 
 .custom-hero__heading {
-  font-size: clamp(40px, 5vw, 72px);
-  margin: 0 0 20px;
+  font-size: 2vw;
+  margin: 0;
 }
 
 .custom-hero__description {
-  max-width: 550px;
-  font-size: 18px;
-  line-height: 1.5;
+  max-width: 40%;
+  font-size: 1.2vw;
+  line-height: 1.5vw;
 }
 
 .custom-hero__button {
   display: inline-flex;
   align-items: center;
-  gap: 30px;
-  margin-top: 30px;
-  padding: 16px 28px;
+  gap: 1vw;
+  margin-top: 2vw;
+  padding: 1vw 2vw;
   background: #000;
   color: #fff;
   text-decoration: none;
@@ -96,7 +97,7 @@
 
   .custom-hero__content {
     min-height: 600px;
-    padding: 25px;
+    padding: 6vw;
   }
 
 }
