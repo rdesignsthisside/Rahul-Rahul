@@ -326,6 +326,23 @@
           </div>
         {%- endif -%}
       </a>
+
+
+      {% if section.settings.header_btn_link %}
+
+        <a href="{{ section.settings.header_btn_link}}" class="header_custom_btn">
+        
+          {{ section.settings.header_btn_text }}
+
+          <span aria-hidden="true">
+            →
+          </span>
+        
+        </a>
+
+      {% endif %}
+
+
     </div>
   </header>
 </{{ header_tag }}>
@@ -587,6 +604,17 @@
       "id": "header_text",
       "label": "Add header text",
       "default": "Add text here"
+    },
+    {
+      "type": "text",
+      "id": "header_btn_text",
+      "label": "Add header text",
+      "default": "Add text here"
+    },
+    {
+      "type": "text",
+      "id": "header_btn_link",
+      "label": "Add header button link",
     },
     {
       "type": "select",
