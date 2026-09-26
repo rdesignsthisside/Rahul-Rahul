@@ -5,7 +5,6 @@
   class="custom-lookbook"
   id="Lookbook-{{ section.id }}"
 >
-
   <div class="page-width">
 
     {% if section.settings.heading != blank %}
@@ -14,7 +13,10 @@
       </h2>
     {% endif %}
 
-    <div class="custom-lookbook__grid">
+    <div
+      class="custom-lookbook__grid"
+      style="--lookbook-columns: {{ section.settings.columns_desktop }};"
+    >
 
       {% for block in section.blocks %}
 
@@ -29,13 +31,15 @@
 
             <div class="lookbook-card__image">
 
-              {{
-                product.featured_image
-                | image_url: width: 1200
-                | image_tag:
-                  loading: 'lazy',
-                  class: 'lookbook-card__product-image'
-              }}
+              {% if product.featured_image != blank %}
+                {{
+                  product.featured_image
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'lookbook-card__product-image'
+                }}
+              {% endif %}
 
               <button
                 type="button"
@@ -46,7 +50,7 @@
                 "
                 data-lookbook-product
                 data-product-json="LookbookProduct-{{ section.id }}-{{ block.id }}"
-                aria-label="View {{ product.title }}"
+                aria-label="View {{ product.title | escape }}"
               >
                 <span>+</span>
               </button>
@@ -70,6 +74,7 @@
 
   </div>
 
+
   <!-- PRODUCT POPUP -->
 
   <div
@@ -78,12 +83,16 @@
     aria-hidden="true"
   >
 
-    <div class="lookbook-modal__overlay"></div>
+    <div
+      class="lookbook-modal__overlay"
+      data-lookbook-close
+    ></div>
 
     <div
       class="lookbook-modal__content"
       role="dialog"
       aria-modal="true"
+      aria-label="Product details"
     >
 
       <button
@@ -98,11 +107,13 @@
       <div class="lookbook-modal__product">
 
         <div class="lookbook-modal__image-wrapper">
+
           <img
             class="lookbook-modal__image"
             data-product-image
             alt=""
           >
+
         </div>
 
         <div class="lookbook-modal__details">
@@ -160,6 +171,7 @@
   "name": "Custom lookbook",
   "tag": "section",
   "class": "section-custom-lookbook",
+
   "settings": [
     {
       "type": "text",
@@ -177,6 +189,7 @@
       "default": 3
     }
   ],
+
   "blocks": [
     {
       "type": "lookbook_product",
@@ -210,7 +223,9 @@
       ]
     }
   ],
+
   "max_blocks": 6,
+
   "presets": [
     {
       "name": "Custom lookbook",
@@ -234,11 +249,6 @@
           "type": "lookbook_product"
         }
       ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "Custom Lookbook"
     }
   ]
 }
