@@ -42,27 +42,20 @@
               {% endif %}
 
               <button
-                type="button"
-                class="lookbook-hotspot"
-                style="
-                  left: {{ block.settings.hotspot_x }}%;
-                  top: {{ block.settings.hotspot_y }}%;
-                "
-                data-lookbook-product
-                data-product-json="LookbookProduct-{{ section.id }}-{{ block.id }}"
-                aria-label="View {{ product.title | escape }}"
-              >
-                <span>+</span>
-              </button>
+                    type="button"
+                    class="lookbook-hotspot"
+                    style="
+                        left: {{ block.settings.hotspot_x }}%;
+                        top: {{ block.settings.hotspot_y }}%;
+                    "
+                    data-lookbook-product
+                    data-product-handle="{{ product.handle | escape }}"
+                    aria-label="View {{ product.title | escape }}"
+                    >
+                    <span>+</span>
+                </button>
 
             </div>
-
-            <script
-              type="application/json"
-              id="LookbookProduct-{{ section.id }}-{{ block.id }}"
-            >
-              {{ product | json }}
-            </script>
 
           </div>
 
