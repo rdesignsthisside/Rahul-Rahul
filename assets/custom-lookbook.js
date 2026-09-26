@@ -988,6 +988,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   }
 
+    const closeModelBtn = document.querySelector('.lookbook-modal__close'); 
+    const lookbookModel = document.querySelector('.lookbook-modal.is-open'); 
+    closeModelBtn.addEventListener("click", function() { 
+        lookbookModel.classList.remove("is-open"); 
+    });
+
+
 
   /*
   CLOSE OVERLAY
@@ -1067,13 +1074,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   
-  
-  const lookbookModelClose = document.querySelector('.lookbook-modal__close');
-  const lookbookModel = document.querySelector('.lookbook-modal.is-open');
-
-  lookbookModelClose.addEventListener("click", function(){
-    lookbookModel.classList.remove('is-open');
-  });
 
 
 });
