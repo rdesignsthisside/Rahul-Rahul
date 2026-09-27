@@ -2487,8 +2487,14 @@ body .page-width {
       display: none;
   }
 
-  .header-wrapper header.header .header_menu_icons {
+  .header-wrapper header.header {
+      padding: 3vw;
+      box-shadow: 0 0 10px #00000042;
+  }
+
+  .header-wrapper header.header span.header_menu_icons {
       position: relative;
+      display: block;
   }
 
 

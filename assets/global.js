@@ -6,6 +6,16 @@ function getFocusableElements(container) {
   );
 }
 
+window.addEventListener('load', function () {
+  const menuBtn = document.querySelector('.header-wrapper header.header span.header_menu_icons');
+  const menuDrawer = document.querySelector('.header_text_btn');
+
+  menuBtn.addEventListener("click", function () {
+      menuDrawer.classList.toggle('open_drawer');
+      menuBtn.classList.toggle('menu_active');
+  });
+});
+
 class SectionId {
   static #separator = '__';
 
