@@ -133,7 +133,7 @@ a.custom-hero__button:hover {
         min-height: auto;
         --hero-height: initial !important;
         display: flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .custom-hero__media {
@@ -174,7 +174,7 @@ a.custom-hero__button:hover {
         line-height: 4vw;
         padding: 2vw 4vw;
         position: absolute;
-        bottom: 10vw;
+        bottom: 15vw;
         left: 0;
         right: 0;
         max-width: max-content;
