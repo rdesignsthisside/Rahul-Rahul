@@ -2476,8 +2476,8 @@ body .page-width {
   }
 
   .header-wrapper header.header .header_menu_icons svg {
-      width: 4vw;
-      height: 4vw;
+      width: 100%;
+      height: 100%;
       position: absolute;
       top: 0;
       right: 0;
@@ -2495,6 +2495,8 @@ body .page-width {
   .header-wrapper header.header span.header_menu_icons {
       position: relative;
       display: block;
+      width: 4vw;
+      height: 4vw;
   }
 
 
