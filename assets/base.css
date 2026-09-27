@@ -2458,9 +2458,11 @@ body .page-width {
   }
 
   .header a.header_custom_btn {
-      font-size: 2vw;
-      line-height: 3vw;
-      padding: 2vw;
+      font-size: 3vw;
+      line-height: 4vw;
+      padding: 2vw 4vw;
+      max-width: max-content;
+      margin: 0 auto;
   }
 
   .header-wrapper header.header .header_text_btn {
@@ -2473,6 +2475,8 @@ body .page-width {
       display: block;
       padding: 3vw;
       transform: translateY(-100%);
+      transition: all 0.3s ease-in-out;
+      z-index: -1;
   }
 
   .header-wrapper header.header .header_menu_icons svg {
@@ -2487,6 +2491,14 @@ body .page-width {
       display: none;
   }
 
+  .header-wrapper header.header span.header_menu_icons.menu_active .icon-hamburger {
+      display: none;
+  }
+
+  .header-wrapper header.header span.header_menu_icons.menu_active .icon-close {
+      display: block;
+  }
+
   .header-wrapper header.header {
       padding: 3vw;
       box-shadow: 0 0 10px #00000042;
@@ -2497,6 +2509,17 @@ body .page-width {
       display: block;
       width: 4vw;
       height: 4vw;
+  }
+
+  header.header .header_text_btn.open_drawer {
+      transform: translateY(50%);
+  }
+
+  .header-wrapper header.header .header_text_btn p.header_line {
+      margin: 1vw 0 2vw;
+      text-align: center;
+      font-size: 3vw;
+      line-height: 4vw;
   }
 
 
