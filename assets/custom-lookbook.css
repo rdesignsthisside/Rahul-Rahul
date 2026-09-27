@@ -78,6 +78,7 @@
   overflow-y: auto;
   background: #fff;
   padding: 25px;
+  box-shadow: 0 0 10px #0000004a;
 }
 
 .lookbook-modal__close {

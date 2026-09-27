@@ -68,6 +68,19 @@
     {% endif %}
 
   </div>
+
+
+    {% if section.settings.banner_line %}
+
+        <div class="bottom_banner_line">
+
+            <p>{{ section.settings.banner_line }}</p>
+
+        </div>
+
+    {% endif %}
+
+
 </section>
 
 
@@ -104,6 +117,12 @@
       "id": "button_text",
       "label": "Button text",
       "default": "SHOP NOW"
+    },
+    {
+      "type": "text",
+      "id": "banner_line",
+      "label": "Bottom text line",
+      "default": "Add text here"
     },
     {
       "type": "url",
