@@ -5,8 +5,7 @@
 }
 
 .custom-hero__media {
-  position: absolute;
-  inset: 0;
+    position: relative;
 }
 
 .custom-hero__image,
@@ -29,13 +28,16 @@
 }
 
 .custom-hero__content {
-  position: relative;
-  z-index: 2;
-  min-height: var(--hero-height);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 3vw;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3vw;
+    bottom: 4vw;
+    left: 0vw;
+    max-width: max-content;
+    width: auto;
 }
 
 .custom-hero__content--left {
@@ -107,6 +109,19 @@ a.custom-hero__button:hover {
     color: #000;
 }
 
+.custom-hero .bottom_banner_line {
+    position: relative;
+    padding: 1vw;
+    background: #F5F5F5;
+}
+
+.custom-hero .bottom_banner_line p {
+    font-size: 1vw;
+    line-height: 1.2vw;
+    margin: 0;
+    text-align: center;
+    color: #000;
+}
 
 
 
@@ -123,6 +138,7 @@ a.custom-hero__button:hover {
 
     .custom-hero__media {
         position: relative;
+        order: 2;
     }
 
     .custom-hero__image {
@@ -138,6 +154,7 @@ a.custom-hero__button:hover {
         padding: 6vw;
         position: initial;
         text-align: center;
+        order: 1;
     }
 
     .custom-hero__heading {
@@ -162,6 +179,16 @@ a.custom-hero__button:hover {
         right: 0;
         max-width: max-content;
         margin: auto;
+    }
+
+    .custom-hero .bottom_banner_line {
+        order: 3;
+        padding: 2vw;
+    }
+
+    .custom-hero .bottom_banner_line p {
+        font-size: 3vw;
+        line-height: 4vw;
     }
 
 }
