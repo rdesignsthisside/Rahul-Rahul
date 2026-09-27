@@ -2504,8 +2504,17 @@ body .page-width {
       box-shadow: 0 0 10px #00000042;
   }
 
+  .header-wrapper header.header h1.header__heading {
+    margin: 0 auto;
+  }
+
+  .header-wrapper header.header h1.header__heading .header__heading-logo {
+      width: 30vw;
+  }
+
   .header-wrapper header.header span.header_menu_icons {
-      position: relative;
+      position: absolute;
+      left: 3vw;
       display: block;
       width: 4vw;
       height: 4vw;
