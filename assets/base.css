@@ -2808,7 +2808,7 @@ menu-drawer + .header__search {
 
 @media screen and (max-width: 989px) {
   .header--has-account:not(.header--has-menu) > .header__search {
-    display: inline-flex;
+    display: none;
   }
 
   .header--has-account.header--has-menu:is(.header--mobile-left, .header--has-app) > .header__search {
