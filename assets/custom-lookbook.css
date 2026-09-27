@@ -317,6 +317,7 @@ form.lookbook-product-form .lookbook-options .lookbook-color-options {
         font-size: 3vw;
         line-height: 4vw;
         padding: 1vw;
+        border: 1px solid #000;
     }
 
     .lookbook-product-form button.lookbook-add-button {

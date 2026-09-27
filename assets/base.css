@@ -2440,6 +2440,17 @@ body .page-width {
   .header--has-app {
     grid-template-columns: auto 1fr auto;
   }
+  details-modal.header__search {
+      display: none !important;
+  }
+
+  .header a.header_custom_btn {
+      font-size: 2vw;
+      line-height: 3vw;
+      padding: 2vw;
+  }
+
+  
 }
 
 @media screen and (min-width: 990px) {
